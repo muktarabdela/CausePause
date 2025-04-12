@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CausePause</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Pause for a Cause</h1>
+        <p>Please take a moment to reflect before continuing to YouTube.</p>
+        <p id="message">Generating message...</p>
+        <p id="countdown">Unblocking in: 10</p>
+    </div>
+
+    <script>
+        let countdown = 10;
+        let message = "Take a deep breath."; // Default message
+
+        function updateMessage(newMessage) {
+            message = newMessage;
+            document.getElementById('message').textContent = message;
+        }
+
+        function updateCountdown() {
+            document.getElementById('countdown').textContent = `Unblocking in: ${countdown}`;
+            countdown--;
+
+            if (countdown < 0) {
+                clearInterval(countdownInterval);
+                unblockYouTube();
+            }
+        }
+
+        function unblockYouTube() {
+            chrome.runtime.sendMessage({ action: 'unblockYouTube' });
+        }
+
+        // Initial message retrieval (replace with actual logic)
+        chrome.runtime.sendMessage({ action: 'generateMessage' }, function(response) {
+            if (response && response.message) {
+                updateMessage(response.message);
+            }
+        });
+
+        const countdownInterval = setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>
